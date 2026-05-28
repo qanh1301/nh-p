@@ -450,7 +450,7 @@
                     <span class="material-symbols-outlined text-xs">verified</span>Hiệp Sĩ
                 </div>
             </div>
-            <h1 class="text-lg font-bold text-on-surface mt-3">USER1234</h1>
+            <h1 class="text-lg font-bold text-on-surface mt-3">Sinh Viên UEH</h1>
             <span class="bg-primary-container text-white px-3 py-0.5 rounded-full text-xs font-bold mt-1">PREMIUM USER</span>
         </section>
 
@@ -815,9 +815,16 @@
                     iconSize: [30, 30]
                 });
 
-                L.marker([item.lat, item.lng], { icon: incidentIcon })
-                 .addTo(map)
-                 .bindPopup(`<b>Cảnh báo: ${item.type}</b>`);
+                const marker = L.marker([item.lat, item.lng], { icon: incidentIcon }).addTo(map);
+                
+                // Đổi từ bindPopup sang bindTooltip để trải nghiệm mượt mà đồng nhất
+                marker.bindTooltip(`<b>Nhấn để xem tình hình: ${item.type}</b>`, { direction: 'top', offset: [0, -10] });
+
+                // TÍCH HỢP SỰ KIỆN CLICK CHO ĐIỂM SẴN CÓ
+                marker.on('click', () => {
+                    switchScreen('feed');
+                    filterFeed(item.type);
+                });
             });
         }
 
@@ -886,7 +893,7 @@
             }
         }
 
-        /* ----- HÀM ĐƯỢC TỐI ƯU HOÁ ĐỂ CHẮC CHẮN HIỂN THỊ MARKER KỂ CẢ KHI GPS CHẬM ----- */
+        /* ----- HÀM GHIM SỰ CỐ MỚI KHI USER TỰ BÁO CÁO ----- */
         function ghimSuCoMoiVaoViTriHienTai(eventType) {
             const doPin = async (lat, lng) => {
                 const config = eventConfig[eventType] || eventConfig["default"];
@@ -899,10 +906,14 @@
                     iconSize: [32, 32]
                 });
 
-                L.marker([lat, lng], { icon: newIcon })
-                 .addTo(map)
-                 .bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`)
-                 .openPopup();
+                const marker = L.marker([lat, lng], { icon: newIcon }).addTo(map);
+                marker.bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`).openPopup();
+                 
+                // TÍCH HỢP SỰ KIỆN CLICK CHO ĐIỂM TỰ BÁO CÁO MỚI SINH RA
+                marker.on('click', () => {
+                    switchScreen('feed');
+                    filterFeed(eventType);
+                });
                  
                 map.setView([lat, lng], 16);
 
@@ -921,7 +932,6 @@
                 addReportToFeed(eventType, config, locationText);
             };
 
-            // Dùng getCurrentPosition với timeout ngắn để không bị treo, nếu lỗi thì dùng vị trí đã tracking ngầm (userLat, userLng)
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => doPin(position.coords.latitude, position.coords.longitude),
@@ -933,9 +943,8 @@
             }
         }
 
-        /* ----- TÍNH NĂNG MỚI: BÁO CÁO NHANH CHUYỂN NGAY VỀ BẢN ĐỒ ----- */
+        /* ----- BÁO CÁO NHANH CHUYỂN NGAY VỀ BẢN ĐỒ ----- */
         function quickReport(eventType) {
-            // Hiển thị thông báo và chuyển sang map ngay lập tức để user thấy Icon xuất hiện khớp 100%
             switchScreen('map');
             
             const toast = document.getElementById('toast');
@@ -949,7 +958,6 @@
                 toast.classList.add('opacity-0', 'pointer-events-none');
             }, 2500);
 
-            // Bắt đầu quy trình ghim
             ghimSuCoMoiVaoViTriHienTai(eventType);
         }
 
@@ -1017,7 +1025,6 @@
                 toast.classList.remove('opacity-0', 'pointer-events-none');
                 toast.classList.add('opacity-100', 'translate-y-2');
 
-                // Dù là "Báo cáo tổng hợp" (Chụp ảnh/Voice), vẫn gọi hàm ghim
                 ghimSuCoMoiVaoViTriHienTai(eventType === 'Báo cáo tổng hợp' ? 'Kẹt xe' : eventType);
 
                 setTimeout(() => {
