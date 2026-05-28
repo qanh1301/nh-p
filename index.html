@@ -182,25 +182,25 @@
         <section class="mb-6">
             <h3 class="text-xs font-bold text-on-surface-variant uppercase mb-3 tracking-widest">Chọn nhanh loại sự cố</h3>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="triggerAISimulation('Tai nạn')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
+                <button onclick="quickReport('Tai nạn')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
                     <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error">
                         <span class="material-symbols-outlined text-3xl">car_crash</span>
                     </div>
                     <span class="text-sm font-semibold">Tai nạn</span>
                 </button>
-                <button onclick="triggerAISimulation('Kẹt xe')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
+                <button onclick="quickReport('Kẹt xe')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
                     <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                         <span class="material-symbols-outlined text-3xl">traffic</span>
                     </div>
                     <span class="text-sm font-semibold">Kẹt xe</span>
                 </button>
-                <button onclick="triggerAISimulation('Cấm đường')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
+                <button onclick="quickReport('Cấm đường')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
                     <div class="w-12 h-12 rounded-full bg-neutral-700/10 flex items-center justify-center text-neutral-700">
                         <span class="material-symbols-outlined text-3xl">block</span>
                     </div>
                     <span class="text-sm font-semibold">Cấm đường</span>
                 </button>
-                <button onclick="triggerAISimulation('Ngập lụt')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
+                <button onclick="quickReport('Ngập lụt')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
                     <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
                         <span class="material-symbols-outlined text-3xl">thunderstorm</span>
                     </div>
@@ -821,30 +821,136 @@
             });
         }
 
-        function ghimSuCoMoiVaoViTriHienTai(eventType) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    
-                    const config = eventConfig[eventType] || eventConfig["default"];
+        /* ----- HÀM ĐẨY BÀI ĐĂNG (FEED) ----- */
+        function addReportToFeed(eventType, config, locationText) {
+            let badgeOuterClass = "";
+            let badgeInnerClass = config.color + " text-white";
+            let defaultImg = "";
+            let description = "";
 
-                    const newIcon = L.divIcon({
-                        className: 'new-incident-icon',
-                        html: `<div class="${config.color} text-white p-2 rounded-full shadow-xl animate-bounce flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[16px]">${config.icon}</span>
-                               </div>`,
-                        iconSize: [32, 32]
-                    });
-
-                    L.marker([lat, lng], { icon: newIcon })
-                     .addTo(map)
-                     .bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`)
-                     .openPopup();
-                     
-                    map.setView([lat, lng], 16);
-                });
+            if (eventType === "Kẹt xe") {
+                badgeOuterClass = "bg-orange-100 text-orange-600";
+                description = "Giao thông đang ùn tắc tại vị trí này. (Cập nhật từ báo cáo của bạn)";
+                defaultImg = "https://znews-photo.zingcdn.me/w1920/Uploaded/jaqpnw/2022_09_05/ket_xe.jpg";
+            } else if (eventType === "Tai nạn") {
+                badgeOuterClass = "bg-error/10 text-error";
+                description = "Vừa xảy ra va chạm tại khu vực này. Mọi người chú ý quan sát. (Cập nhật từ báo cáo của bạn)";
+                defaultImg = "https://cdn.tuoitre.vn/471584752817336320/2024/1/12/tai-nan-1705021234567.jpg";
+            } else if (eventType === "Ngập lụt") {
+                badgeOuterClass = "bg-blue-100 text-blue-600";
+                description = "Nước đang ngập. Các xe gầm thấp di chuyển cẩn thận. (Cập nhật từ báo cáo của bạn)";
+                defaultImg = "https://autopro8.mediacdn.vn/2018/11/19/photo-1-1542590940895882389146.jpg";
+            } else if (eventType === "Cấm đường") {
+                badgeOuterClass = "bg-neutral-100 text-neutral-700";
+                description = "Có rào chắn hoặc đang thi công cấm đường tại đây. (Cập nhật từ báo cáo của bạn)";
+                defaultImg = "https://galaxydidong.vn/wp-content/uploads/2025/08/7.jpg";
+            } else {
+                badgeOuterClass = "bg-orange-100 text-orange-600";
+                description = "Sự cố giao thông mới được ghi nhận. (Cập nhật từ báo cáo của bạn)";
+                defaultImg = "https://cdn.24h.com.vn/upload/1-2024/images/2024-01-31/Ket-xe-khap-nga-duong-o-TPHCM-nhung-ngay-can-Tet-anh-6-1706658380-721-width2568height1926.jpg";
             }
+
+            const newArticle = `
+            <article data-type="${eventType}" class="feed-item bg-white rounded-xl overflow-hidden shadow-sm border border-green-300 p-4 transition-all animate-[pulse_0.3s_ease-in-out]">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm">YOU</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-on-surface">Bạn (Vừa gửi)</h4>
+                            <p class="text-[11px] text-on-surface-variant">Vừa xong • ${locationText}</p>
+                        </div>
+                    </div>
+                    <span class="${badgeOuterClass} text-[11px] font-bold px-2 py-0.5 rounded-full">${eventType}</span>
+                </div>
+                <div class="relative h-48 w-full group cursor-pointer mb-3 rounded-lg overflow-hidden border">
+                    <img class="w-full h-full object-cover" src="${defaultImg}" alt="${eventType}">
+                    <div class="absolute top-3 left-3 ${badgeInnerClass} text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">${config.icon}</span>
+                        <span>${eventType} • Tại đây</span>
+                    </div>
+                </div>
+                <p class="text-sm text-neutral-700 mb-3">${description}</p>
+                <div class="flex items-center justify-between border-t pt-3 text-xs">
+                    <button onclick="upvoteReport(this)" class="flex items-center gap-1 px-3 py-1.5 bg-green-50 text-tertiary font-bold rounded-lg hover:bg-green-100 transition-colors">
+                        <span class="material-symbols-outlined text-sm">thumb_up</span>
+                        <span><span class="vote-count">0</span> Xác thực</span>
+                    </button>
+                    <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">share</span>
+                </div>
+            </article>
+            `;
+
+            const feedContainer = document.querySelector('#screen-feed .space-y-4');
+            if (feedContainer) {
+                feedContainer.insertAdjacentHTML('afterbegin', newArticle);
+            }
+        }
+
+        /* ----- HÀM ĐƯỢC TỐI ƯU HOÁ ĐỂ CHẮC CHẮN HIỂN THỊ MARKER KỂ CẢ KHI GPS CHẬM ----- */
+        function ghimSuCoMoiVaoViTriHienTai(eventType) {
+            const doPin = async (lat, lng) => {
+                const config = eventConfig[eventType] || eventConfig["default"];
+
+                const newIcon = L.divIcon({
+                    className: 'new-incident-icon',
+                    html: `<div class="${config.color} text-white p-2 rounded-full shadow-xl animate-bounce flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[16px]">${config.icon}</span>
+                           </div>`,
+                    iconSize: [32, 32]
+                });
+
+                L.marker([lat, lng], { icon: newIcon })
+                 .addTo(map)
+                 .bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`)
+                 .openPopup();
+                 
+                map.setView([lat, lng], 16);
+
+                let locationText = `Toạ độ GPS: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                    const data = await response.json();
+                    if (data && data.display_name) {
+                        const addressParts = [];
+                        if (data.address.road) addressParts.push(data.address.road);
+                        if (data.address.suburb || data.address.quarter) addressParts.push(data.address.suburb || data.address.quarter);
+                        if (addressParts.length > 0) locationText = addressParts.join(', ');
+                    }
+                } catch(e) {}
+
+                addReportToFeed(eventType, config, locationText);
+            };
+
+            // Dùng getCurrentPosition với timeout ngắn để không bị treo, nếu lỗi thì dùng vị trí đã tracking ngầm (userLat, userLng)
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => doPin(position.coords.latitude, position.coords.longitude),
+                    (error) => doPin(userLat, userLng),
+                    { enableHighAccuracy: true, timeout: 3000, maximumAge: 5000 }
+                );
+            } else {
+                doPin(userLat, userLng);
+            }
+        }
+
+        /* ----- TÍNH NĂNG MỚI: BÁO CÁO NHANH CHUYỂN NGAY VỀ BẢN ĐỒ ----- */
+        function quickReport(eventType) {
+            // Hiển thị thông báo và chuyển sang map ngay lập tức để user thấy Icon xuất hiện khớp 100%
+            switchScreen('map');
+            
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.innerText = `Đang thả ghim ${eventType} theo vị trí GPS...`;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-2');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-2');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+
+            // Bắt đầu quy trình ghim
+            ghimSuCoMoiVaoViTriHienTai(eventType);
         }
 
         function switchScreen(screenName) {
@@ -907,11 +1013,12 @@
             setTimeout(() => {
                 overlay.classList.add('opacity-0', 'pointer-events-none');
                 
-                toastMsg.innerText = `Báo cáo [${eventType}] thành công! Đã ghim định vị lên bản đồ.`;
+                toastMsg.innerText = `Báo cáo [${eventType}] thành công! Đã cập nhật trên Bản tin và Bản đồ.`;
                 toast.classList.remove('opacity-0', 'pointer-events-none');
                 toast.classList.add('opacity-100', 'translate-y-2');
 
-                ghimSuCoMoiVaoViTriHienTai(eventType);
+                // Dù là "Báo cáo tổng hợp" (Chụp ảnh/Voice), vẫn gọi hàm ghim
+                ghimSuCoMoiVaoViTriHienTai(eventType === 'Báo cáo tổng hợp' ? 'Kẹt xe' : eventType);
 
                 setTimeout(() => {
                     toast.classList.remove('opacity-100', 'translate-y-2');
