@@ -84,7 +84,7 @@
         <div class="flex items-center gap-3">
             <span class="text-sm font-medium text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant/20">TP. Hồ Chí Minh</span>
             <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer" onclick="switchScreen('profile')">
-                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCspJQmr1T3Qmi9Gb9RfajMai0ArIdiOpJ3v3T7GzBKGyctbAPw9k-RwPowHrE_mr3To8ZJFBOHsiQZOrikueylnew1QG4vktZSCCeyp7AxH1suBdRDMiinyciWpEhCVi7mbqVCKuYBscsSqxeaq1PwOjs6-mAOEn8K4-n9NrC4cXswcR3tpBoci2SKvu2_stVWWdmhsvGquAeJUpDo0PK6B_7bi6uU4C39-5rfjA_Ef_n57uauGkfIdfI-ZjPFJYPq__ytWvnHt6EVeQ">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://tse2.mm.bing.net/th/id/OIP.04heSldI3du5uHTcDPb6vQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3">
             </div>
         </div>
     </header>
@@ -444,22 +444,22 @@
         <section class="flex flex-col items-center py-4">
             <div class="relative">
                 <div class="w-24 h-24 rounded-full border-4 border-primary-container p-1 shadow-md">
-                    <img alt="User Avatar" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ_hEFLHPx72ZzsjPPFN1NoRICifs0wPDp5jF5XzlwFEXcJVnDIRYEeCNvGT8x0p54dgzuXp1ziaLEOlIAQPyq7svzvj2jpF9arL4sqUzmvvpAH3CwPltQEi3pgx_jHhb1EobaSqFfkLR81mMKDFVbteB-dxY8AlBiUkeeEa9JMiKBEmSviJ0ORSQ2PjM0_fOA3sbT2GmN8BcsIQF3RdggKkHvylhYZiT0T30vRS5jvhYdyvyL6D-zkwZeQ_FZBxfC1zlECLUCGVuBdg">
+                    <img alt="User Avatar" class="w-full h-full rounded-full object-cover" src="https://tse2.mm.bing.net/th/id/OIP.04heSldI3du5uHTcDPb6vQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3">
                 </div>
                 <div class="absolute -bottom-1 -right-1 bg-tertiary text-white px-2 py-0.5 rounded-full text-[10px] border-2 border-white flex items-center gap-0.5">
                     <span class="material-symbols-outlined text-xs">verified</span>Hiệp Sĩ
                 </div>
             </div>
-            <h1 class="text-lg font-bold text-on-surface mt-3">Sinh Viên UEH</h1>
+            <h1 class="text-lg font-bold text-on-surface mt-3">User 1234</h1>
             <span class="bg-primary-container text-white px-3 py-0.5 rounded-full text-xs font-bold mt-1">PREMIUM USER</span>
         </section>
 
         <section class="bg-white border border-outline-variant/40 rounded-xl p-4 shadow-sm mb-4">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-sm font-semibold text-on-surface-variant flex items-center gap-1">
-                    <span class="material-symbols-outlined text-primary">security</span>Chỉ số uy tín dữ liệu (Trust Score)
+                    <span class="material-symbols-outlined text-primary">stars</span>Số báo cáo đã đóng góp
                 </h2>
-                <span class="text-primary font-bold text-lg">92/100</span>
+                <span class="text-primary font-bold text-lg">92</span>
             </div>
             <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div class="h-full bg-primary-container shadow-md transition-all duration-1000" style="width: 92%"></div>
@@ -817,10 +817,8 @@
 
                 const marker = L.marker([item.lat, item.lng], { icon: incidentIcon }).addTo(map);
                 
-                // Đổi từ bindPopup sang bindTooltip để trải nghiệm mượt mà đồng nhất
                 marker.bindTooltip(`<b>Nhấn để xem tình hình: ${item.type}</b>`, { direction: 'top', offset: [0, -10] });
 
-                // TÍCH HỢP SỰ KIỆN CLICK CHO ĐIỂM SẴN CÓ
                 marker.on('click', () => {
                     switchScreen('feed');
                     filterFeed(item.type);
@@ -909,7 +907,6 @@
                 const marker = L.marker([lat, lng], { icon: newIcon }).addTo(map);
                 marker.bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`).openPopup();
                  
-                // TÍCH HỢP SỰ KIỆN CLICK CHO ĐIỂM TỰ BÁO CÁO MỚI SINH RA
                 marker.on('click', () => {
                     switchScreen('feed');
                     filterFeed(eventType);
