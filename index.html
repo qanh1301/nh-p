@@ -53,6 +53,7 @@
         .recording-active { animation: recording-pulse 1s infinite ease-in-out; background-color: #ba1a1a !important; }
         .thumb-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: #ff6b00; cursor: pointer; border-radius: 50%; border: 4px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         
+        /* Loại bỏ border mặc định lỗi của Leaflet Icon div */
         .leaflet-div-icon { background: transparent !important; border: none !important; }
 
         .incident-pulse {
@@ -80,9 +81,7 @@
             <span class="text-xl font-extrabold text-primary tracking-tight cursor-pointer" onclick="switchScreen('map')">TrafficEye</span>
         </div>
         <div class="flex items-center gap-3">
-            <span id="gps-status" class="text-sm font-medium text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant/20 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping"></span> Đang chờ GPS...
-            </span>
+            <span class="text-sm font-medium text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant/20">TP. Hồ Chí Minh</span>
             <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer" onclick="switchScreen('profile')">
                 <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCspJQmr1T3Qmi9Gb9RfajMai0ArIdiOpJ3v3T7GzBKGyctbAPw9k-RwPowHrE_mr3To8ZJFBOHsiQZOrikueylnew1QG4vktZSCCeyp7AxH1suBdRDMiinyciWpEhCVi7mbqVCKuYBscsSqxeaq1PwOjs6-mAOEn8K4-n9NrC4cXswcR3tpBoci2SKvu2_stVWWdmhsvGquAeJUpDo0PK6B_7bi6uU4C39-5rfjA_Ef_n57uauGkfIdfI-ZjPFJYPq__ytWvnHt6EVeQ">
             </div>
@@ -111,12 +110,6 @@
                     <span class="material-symbols-outlined text-on-surface-variant ml-2 cursor-pointer" onclick="switchScreen('report')">mic</span>
                 </div>
             </div>
-        </div>
-
-        <div class="fixed bottom-40 right-6 z-40">
-            <button onclick="centerMapOnUser()" class="w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-secondary hover:bg-gray-50 active:scale-95 transition-transform">
-                <span class="material-symbols-outlined">my_location</span>
-            </button>
         </div>
 
         <div id="route-panel" class="fixed bottom-40 left-0 w-full px-4 z-30 hidden flex justify-center">
@@ -163,7 +156,10 @@
             </div>
         </div>
 
-        <div class="fixed bottom-24 right-6 z-40">
+        <div class="fixed bottom-24 right-6 z-40 flex flex-col gap-3">
+            <button onclick="centerMapOnUser()" class="w-14 h-14 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-secondary hover:bg-gray-50 active:scale-95 transition-transform ml-auto">
+                <span class="material-symbols-outlined">my_location</span>
+            </button>
             <button onclick="switchScreen('report')" class="flex items-center gap-2 bg-primary-container text-white px-6 h-14 rounded-full shadow-[0_8px_24px_rgba(255,107,0,0.4)] font-semibold text-sm hover:brightness-110 active:scale-95 transition-all animate-pulse-orange">
                 <span class="material-symbols-outlined">add_circle</span>
                 <span>Báo cáo ngay</span>
@@ -174,7 +170,7 @@
     <div id="screen-report" class="app-screen pt-16 px-6 max-w-lg mx-auto hidden">
         <section class="mt-4 mb-6">
             <div class="bg-primary-container/10 border-2 border-primary-container/20 rounded-xl p-6 flex flex-col items-center text-center relative overflow-hidden">
-                <h2 class="text-lg font-bold text-primary mb-1">Báo cáo bằng giọng nói</h2>
+                <h2 class="text-lg font-bold text-primary mb-1">Báo cáo bằng giọng nói (AI tự động bóc tách)</h2>
                 <p class="text-sm text-on-surface-variant mb-4" id="voiceStatus">Nhấn vào mic và nói: "Kẹt xe nặng ở đường Điện Biên Phủ"</p>
                 <button class="w-20 h-20 bg-primary-container text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform relative" id="voiceBtn">
                     <span class="material-symbols-outlined text-[40px]">mic</span>
@@ -186,19 +182,27 @@
             <h3 class="text-xs font-bold text-on-surface-variant uppercase mb-3 tracking-widest">Chọn nhanh loại sự cố</h3>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="triggerAISimulation('Tai nạn')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
-                    <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error"><span class="material-symbols-outlined text-3xl">car_crash</span></div>
+                    <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error">
+                        <span class="material-symbols-outlined text-3xl">car_crash</span>
+                    </div>
                     <span class="text-sm font-semibold">Tai nạn</span>
                 </button>
                 <button onclick="triggerAISimulation('Kẹt xe')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
-                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-3xl">traffic</span></div>
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-3xl">traffic</span>
+                    </div>
                     <span class="text-sm font-semibold">Kẹt xe</span>
                 </button>
                 <button onclick="triggerAISimulation('Cấm đường')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
-                    <div class="w-12 h-12 rounded-full bg-neutral-700/10 flex items-center justify-center text-neutral-700"><span class="material-symbols-outlined text-3xl">block</span></div>
+                    <div class="w-12 h-12 rounded-full bg-neutral-700/10 flex items-center justify-center text-neutral-700">
+                        <span class="material-symbols-outlined text-3xl">block</span>
+                    </div>
                     <span class="text-sm font-semibold">Cấm đường</span>
                 </button>
                 <button onclick="triggerAISimulation('Ngập lụt')" class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col items-center gap-2 shadow-sm hover:bg-orange-50 transition-colors">
-                    <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary"><span class="material-symbols-outlined text-3xl">thunderstorm</span></div>
+                    <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                        <span class="material-symbols-outlined text-3xl">thunderstorm</span>
+                    </div>
                     <span class="text-sm font-semibold">Thời tiết/Ngập</span>
                 </button>
             </div>
@@ -214,7 +218,9 @@
                         <span class="material-symbols-outlined text-on-surface-variant mb-1">photo_camera</span>
                         <span class="text-xs text-on-surface-variant">Chụp ảnh nhanh</span>
                     </div>
-                    <div id="change-photo-overlay" class="absolute inset-0 bg-black/50 text-white text-[11px] font-medium items-center justify-center z-20 hidden">Thay đổi ảnh</div>
+                    <div id="change-photo-overlay" class="absolute inset-0 bg-black/50 text-white text-[11px] font-medium items-center justify-center z-20 hidden">
+                        Thay đổi ảnh
+                    </div>
                 </button>
 
                 <div class="relative rounded-xl overflow-hidden shadow-sm border border-outline-variant">
@@ -234,7 +240,7 @@
 
     <div id="screen-routes" class="app-screen pt-16 px-6 max-w-lg mx-auto hidden">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-on-background">Tuyến đường đã lưu</h2>
+            <h2 class="text-lg font-bold text-on-background">Tuyến đường đã lưu (Saved Routes)</h2>
             <button class="bg-primary-container text-white px-3 py-1 rounded-xl text-xs font-bold shadow flex items-center gap-1"><span class="material-symbols-outlined text-sm">add</span>Thêm mới</button>
         </div>
 
@@ -257,6 +263,13 @@
                             <p class="text-xs text-on-surface-variant">Thứ 2 - Thứ 6 • 07:30</p>
                         </div>
                     </div>
+                    <div class="flex flex-col items-end">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input checked class="sr-only peer" type="checkbox">
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+                        </label>
+                        <span class="text-[10px] text-primary font-bold mt-1">Smart Alert ON</span>
+                    </div>
                 </div>
                 <div class="bg-error-container/60 border border-error/10 rounded-lg p-3 flex justify-between items-center text-xs">
                     <div class="flex items-center gap-1 text-error font-semibold">
@@ -264,6 +277,29 @@
                         <span>Phát hiện 2 cảnh báo kẹt xe, 1 điểm ngập</span>
                     </div>
                     <span class="font-bold text-error">+12 phút trễ</span>
+                </div>
+            </div>
+
+            <div class="route-card-gradient border border-outline-variant/30 rounded-xl p-4 shadow-sm opacity-90">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex gap-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-secondary"><span class="material-symbols-outlined">fitness_center</span></div>
+                        <div>
+                            <h3 class="font-bold text-md text-on-background">Nhà ➔ Phòng Gym Ways Station</h3>
+                            <p class="text-xs text-on-surface-variant">Cuối tuần • Tự do</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input class="sr-only peer" type="checkbox">
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+                        </label>
+                        <span class="text-[10px] text-neutral-400 mt-1">Đã tắt</span>
+                    </div>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-3 flex justify-between items-center text-xs text-tertiary font-semibold">
+                    <div class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">check_circle</span>Tuyến đường thông thoáng</div>
+                    <span>15 phút</span>
                 </div>
             </div>
         </div>
@@ -288,12 +324,48 @@
                     </div>
                     <span class="bg-error/10 text-error text-[11px] font-bold px-2 py-0.5 rounded-full">Tai nạn giao thông</span>
                 </div>
+                <div class="relative h-48 w-full group cursor-pointer mb-3 rounded-lg overflow-hidden border">
+                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxPnqLUK-KzUD3h70DEwYu5ioqZHSYdtGqxcJDKCMBGgTNR5eXlYigVwTdZhyBqtnlKmjNsEvn8hI8M-WCj9iHSuWn8LLUtH13j1ZHtXnG-Njd8TFW6DXmL47mpR_y0AKoNn3mm4ImXzl0Aadv06jTEeGeAtnTGET4g0oxdXmogZ2Y3kdKE3TTEx9kHXYpzLMBXbbagpm478s9Y_cpBcQiudgSwUPQmk6PJ8DKA0hNgeg1oOPGb4V-V1hpEcaJZduqGGIvWWNnIPq0nA">
+                    <div class="absolute top-3 left-3 bg-error text-white text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+                        <span>Tai nạn • 500m</span>
+                    </div>
+                </div>
                 <p class="text-sm text-neutral-700 mb-3">Va chạm nhẹ giữa 2 xe máy gây ùn tắc cục bộ hướng về cầu Sài Gòn. Anh em di chuyển chú ý rẽ sang hướng Xô Viết Nghệ Tĩnh nhé.</p>
                 <div class="flex items-center justify-between border-t pt-3 text-xs">
                     <button onclick="upvoteReport(this)" class="flex items-center gap-1 px-3 py-1.5 bg-green-50 text-tertiary font-bold rounded-lg hover:bg-green-100 transition-colors">
                         <span class="material-symbols-outlined text-sm">thumb_up</span>
                         <span><span class="vote-count">24</span> Xác thực (Tăng uy tín)</span>
                     </button>
+                    <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">share</span>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant/30 p-4">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center"><span class="material-symbols-outlined text-sm">local_police</span></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-on-surface">Đội Tuần Tra Đô Thị</h4>
+                            <p class="text-[11px] text-on-surface-variant">15 phút trước • Đường Nguyễn Hữu Cảnh</p>
+                        </div>
+                    </div>
+                    <span class="bg-secondary/10 text-secondary text-[11px] font-bold px-2 py-0.5 rounded-full">Ngập lụt sâu</span>
+                </div>
+                <div class="relative h-48 w-full group cursor-pointer mb-3 rounded-lg overflow-hidden border">
+                    <img class="w-full h-full object-cover" src="https://autopro8.mediacdn.vn/2018/11/19/photo-1-1542590940895882389146.jpg">
+                    <div class="absolute top-3 left-3 bg-error text-white text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+                        <span>Ngập lụt • 1.2km </span>
+                    </div>
+                </div>
+                <p class="text-sm text-neutral-700 mb-3">Triều cường lên cao gây ngập lụt sâu khoảng 30cm đoạn Landmark 81. Các xe máy gầm thấp di chuyển chậm hoặc đổi lộ trình để tránh chết máy.</p>
+                <div class="flex items-center justify-between border-t pt-3 text-xs">
+                    <button onclick="upvoteReport(this)" class="flex items-center gap-1 px-3 py-1.5 bg-green-50 text-tertiary font-bold rounded-lg hover:bg-green-100 transition-colors">
+                        <span class="material-symbols-outlined text-sm">thumb_up</span>
+                        <span><span class="vote-count">156</span> Xác thực (Tăng uy tín)</span>
+                    </button>
+                    <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">share</span>
                 </div>
             </article>
         </div>
@@ -310,17 +382,47 @@
                 </div>
             </div>
             <h1 class="text-lg font-bold text-on-surface mt-3">Sinh Viên UEH</h1>
+            <span class="bg-primary-container text-white px-3 py-0.5 rounded-full text-xs font-bold mt-1">PREMIUM USER</span>
         </section>
 
         <section class="bg-white border border-outline-variant/40 rounded-xl p-4 shadow-sm mb-4">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-sm font-semibold text-on-surface-variant flex items-center gap-1">
-                    <span class="material-symbols-outlined text-primary">security</span>Chỉ số uy tín dữ liệu
+                    <span class="material-symbols-outlined text-primary">security</span>Chỉ số uy tín dữ liệu (Trust Score)
                 </h2>
                 <span class="text-primary font-bold text-lg">92/100</span>
             </div>
             <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div class="h-full bg-primary-container shadow-md transition-all duration-1000" style="width: 92%"></div>
+            </div>
+            <div class="flex gap-2 mt-3 text-xs">
+                <div class="flex-1 bg-surface-container-low p-2 rounded-lg flex items-center gap-1"><span>🥈</span><b>Hiệp sĩ đường phố</b></div>
+                <div class="flex-1 bg-surface-container-low p-2 rounded-lg flex items-center gap-1"><span>🌧️</span><b>Thần mưa ngập lụt</b></div>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <div class="bg-white border rounded-xl p-4 space-y-3">
+                <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cấu hình cá nhân hóa</h3>
+                <div class="flex justify-between items-center text-sm border-b pb-2">
+                    <span class="font-medium">Phương tiện di chuyển mặc định</span>
+                    <span class="text-primary font-bold flex items-center gap-1"><span class="material-symbols-outlined">moped</span>Xe máy (SH 150i)</span>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span class="font-medium">Hệ thống Trợ lý ảo Voice-Alert</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input checked class="sr-only peer" type="checkbox">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-white border rounded-xl p-4">
+                <div class="flex justify-between items-center mb-2 text-sm">
+                    <span class="font-semibold flex items-center gap-1"><span class="material-symbols-outlined text-secondary">distance</span>Phạm vi quét cảnh báo lân cận</span>
+                    <span class="font-bold text-primary" id="range-val">2.0 km</span>
+                </div>
+                <input class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer thumb-slider" max="10" min="0.5" oninput="document.getElementById('range-val').innerText = parseFloat(this.value).toFixed(1) + ' km'" step="0.5" type="range" value="2">
             </div>
         </section>
     </div>
@@ -364,13 +466,13 @@
             "default": { icon: "report", color: "bg-orange-500" }
         };
 
-        // Khởi tạo biến
+        // ==================== KHỞI TẠO BẢN ĐỒ OPENSTREETMAP VÀ BẮT GPS ====================
         let map;
         let userMarker;
-        let userLat = 10.7769; // Tọa độ trung tâm SG (Dùng tạm nếu GPS bị lỗi)
+        let userLat = 10.7769; // Tọa độ trung tâm SG
         let userLng = 106.6995;
-        let isFirstLocationFound = false; // Biến kiểm tra GPS đã bắt được lần đầu chưa
 
+        // Các biến dùng cho module Tìm đường
         let routeLayers = [];
         let incidentMarkers = [];
         let destinationMarker = null;
@@ -378,18 +480,19 @@
         let selectedRoute = 1;
         let routeCoordinates = { route1: [], route2: [] };
 
-        // KHỞI TẠO BẢN ĐỒ OPENSTREETMAP
         function initMap() {
-            map = L.map('map', { zoomControl: false }).setView([userLat, userLng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            map = L.map('map', {
+                zoomControl: false 
+            }).setView([userLat, userLng], 15);
 
-            setTimeout(() => { map.invalidateSize(); }, 200);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
             addSampleIncidentMarkers();
             trackUserLocation();
         }
 
-        // ĐỊNH VỊ LIÊN TỤC (SỬA LỖI KHÔNG PAN VỀ VỊ TRÍ)
         function trackUserLocation() {
             if (!navigator.geolocation) {
                 console.error("Trình duyệt không hỗ trợ Geolocation.");
@@ -401,8 +504,7 @@
                     userLat = position.coords.latitude;
                     userLng = position.coords.longitude;
 
-                    document.getElementById('gps-status').className = "text-sm font-medium text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200 flex items-center gap-1 shadow-sm";
-                    document.getElementById('gps-status').innerHTML = `<span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Đã khóa GPS`;
+                    map.panTo(new L.LatLng(userLat, userLng));
 
                     if (!userMarker) {
                         const userIcon = L.divIcon({
@@ -410,31 +512,23 @@
                             html: `<div class="w-5 h-5 bg-blue-500 border-2 border-white rounded-full shadow-lg animate-pulse"></div>`,
                             iconSize: [20, 20]
                         });
-                        userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-                        userMarker.bindPopup("<b>Vị trí thực tế của bạn</b>");
+                        userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
+                        userMarker.bindPopup("<b>Vị trí hiện tại của bạn</b>").openPopup();
                     } else {
                         userMarker.setLatLng([userLat, userLng]);
                     }
-
-                    // TỰ ĐỘNG LIA CAMERA VỀ VỊ TRÍ KHI BẮT ĐƯỢC GPS LẦN ĐẦU
-                    if (!isFirstLocationFound) {
-                        map.flyTo([userLat, userLng], 16, { animate: true, duration: 1.5 });
-                        isFirstLocationFound = true;
-                    }
                 },
                 (error) => {
-                    console.warn("Lỗi GPS: ", error.message);
-                    document.getElementById('gps-status').className = "text-sm font-medium text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 flex items-center gap-1";
-                    document.getElementById('gps-status').innerHTML = `⚠️ Dùng vị trí giả lập`;
-                    
-                    // Thông báo cho người dùng biết nếu bị chặn quyền
-                    if(error.code === 1) alert("Hệ thống bị từ chối quyền truy cập Vị trí (GPS). Vui lòng cấp quyền trên trình duyệt của bạn!");
+                    console.warn("Chưa đồng bộ được luồng GPS: ", error.message);
                 },
-                { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+                {
+                    enableHighAccuracy: true, 
+                    maximumAge: 0,
+                    timeout: 15000
+                }
             );
         }
 
-        // HÀM CHO NÚT "VỀ VỊ TRÍ CỦA TÔI"
         function centerMapOnUser() {
             if (userLat && userLng) {
                 map.flyTo([userLat, userLng], 16, { animate: true, duration: 1 });
@@ -442,7 +536,7 @@
             }
         }
 
-        // HÀM TÌM ĐƯỜNG (Giữ nguyên logic API OpenStreetMap Nominatim)
+        // ==================== TÍNH NĂNG TÌM ĐƯỜNG ====================
         async function searchAndRoute() {
             const destQuery = document.getElementById('dest-input').value;
             const startQuery = document.getElementById('start-input').value.trim();
@@ -568,8 +662,6 @@
 
         function clearRouting() {
             document.getElementById('route-panel').classList.add('hidden');
-            clearPreviousRouteLayers();
-            centerMapOnUser();
         }
 
         function clearPreviousRouteLayers() {
@@ -583,65 +675,220 @@
             startMarker = null;
         }
 
+        // ==================== CÁC TÍNH NĂNG KHÁC ====================
         function addSampleIncidentMarkers() {
             const samples = [
                 { lat: 10.7795, lng: 106.6920, type: "Tai nạn", icon: "car_crash", color: "bg-red-600" },
-                { lat: 10.7742, lng: 106.7015, type: "Kẹt xe", icon: "traffic", color: "bg-orange-500" }
+                { lat: 10.7742, lng: 106.7015, type: "Kẹt xe", icon: "traffic", color: "bg-orange-500" },
+                { lat: 10.7812, lng: 106.6970, type: "Ngập lụt", icon: "flood", color: "bg-blue-500" }
             ];
+
             samples.forEach(item => {
                 const incidentIcon = L.divIcon({
                     className: 'custom-incident-icon',
-                    html: `<div class="${item.color} text-white p-2 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-all"><span class="material-symbols-outlined text-[16px]">${item.icon}</span></div>`,
+                    html: `<div class="${item.color} text-white p-2 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-all">
+                                <span class="material-symbols-outlined text-[16px]">${item.icon}</span>
+                           </div>`,
                     iconSize: [30, 30]
                 });
-                L.marker([item.lat, item.lng], { icon: incidentIcon }).addTo(map).bindPopup(`<b>Cảnh báo: ${item.type}</b>`);
+
+                L.marker([item.lat, item.lng], { icon: incidentIcon })
+                 .addTo(map)
+                 .bindPopup(`<b>Cảnh báo: ${item.type}</b>`);
             });
         }
 
-        function triggerAISimulation(eventType) {
-            const overlay = document.getElementById('processingOverlay');
-            document.getElementById('aiProcessText').innerText = `AI đang bóc tách & xác thực: [${eventType}]...`;
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
+        function ghimSuCoMoiVaoViTriHienTai(eventType) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    const config = eventConfig[eventType] || eventConfig["default"];
 
-            setTimeout(() => {
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-                document.getElementById('toastMessage').innerText = `Báo cáo [${eventType}] thành công!`;
-                document.getElementById('toast').classList.remove('opacity-0', 'pointer-events-none');
-                
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        const config = eventConfig[eventType] || eventConfig["default"];
-                        const newIcon = L.divIcon({
-                            className: 'new-incident-icon',
-                            html: `<div class="${config.color} text-white p-2 rounded-full shadow-xl animate-bounce flex items-center justify-center"><span class="material-symbols-outlined text-[16px]">${config.icon}</span></div>`,
-                            iconSize: [32, 32]
-                        });
-                        L.marker([position.coords.latitude, position.coords.longitude], { icon: newIcon }).addTo(map).bindPopup(`<b>Báo cáo: ${eventType}</b>`).openPopup();
-                        map.setView([position.coords.latitude, position.coords.longitude], 16);
+                    const newIcon = L.divIcon({
+                        className: 'new-incident-icon',
+                        html: `<div class="${config.color} text-white p-2 rounded-full shadow-xl animate-bounce flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">${config.icon}</span>
+                               </div>`,
+                        iconSize: [32, 32]
                     });
-                }
 
-                setTimeout(() => {
-                    document.getElementById('toast').classList.add('opacity-0', 'pointer-events-none');
-                    switchScreen('map');
-                }, 2000);
-            }, 1500);
+                    L.marker([lat, lng], { icon: newIcon })
+                     .addTo(map)
+                     .bindPopup(`<b>Báo cáo mới từ bạn: ${eventType}</b>`)
+                     .openPopup();
+                     
+                    map.setView([lat, lng], 16);
+                });
+            }
         }
 
         function switchScreen(screenName) {
             document.querySelectorAll('.app-screen').forEach(screen => screen.classList.add('hidden'));
-            document.getElementById(`screen-${screenName}`).classList.remove('hidden');
+            
+            const targetScreen = document.getElementById(`screen-${screenName}`);
+            if (targetScreen) targetScreen.classList.remove('hidden');
+            
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.className = "flex flex-col items-center justify-center py-1.5 w-full text-on-surface-variant transition-all";
-                if(btn.querySelector('span:last-child')) btn.querySelector('span:last-child').classList.remove('font-bold');
+                const spanLabel = btn.querySelector('span:last-child');
+                if (spanLabel) spanLabel.classList.remove('font-bold');
             });
+            
             const activeNav = document.getElementById(`nav-${screenName}`);
-            activeNav.className = "flex flex-col items-center justify-center py-1.5 w-full bg-primary-container text-white rounded-xl transform scale-95 transition-all";
-            activeNav.querySelector('span:last-child').classList.add('font-bold');
-            if (screenName === 'map' && map) setTimeout(() => { map.invalidateSize(); }, 200);
+            if (activeNav) {
+                activeNav.className = "flex flex-col items-center justify-center py-1.5 w-full bg-primary-container text-white rounded-xl transform scale-95 transition-all";
+                const spanLabel = activeNav.querySelector('span:last-child');
+                if (spanLabel) spanLabel.classList.add('font-bold');
+            }
+
+            if (screenName === 'map' && map) {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
         }
 
-        window.addEventListener('load', initMap);
+        function previewCapturedImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('captured-preview');
+                    const promptUi = document.getElementById('camera-prompt-ui');
+                    const overlay = document.getElementById('change-photo-overlay');
+                    const cameraBtn = document.getElementById('camera-btn');
+                    
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    promptUi.classList.add('hidden');
+                    
+                    cameraBtn.classList.remove('border-dashed');
+                    cameraBtn.classList.add('border-solid', 'border-primary-container');
+                    
+                    cameraBtn.onmouseenter = () => overlay.className = "absolute inset-0 bg-black/60 text-white text-[11px] font-medium flex items-center justify-center z-20";
+                    cameraBtn.onmouseleave = () => overlay.className = "absolute inset-0 bg-black/50 text-white text-[11px] font-medium items-center justify-center z-20 hidden";
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function triggerAISimulation(eventType) {
+            const overlay = document.getElementById('processingOverlay');
+            const aiText = document.getElementById('aiProcessText');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+
+            aiText.innerText = `AI đang bóc tách & xác thực: [${eventType}]...`;
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+
+            setTimeout(() => {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                
+                toastMsg.innerText = `Báo cáo [${eventType}] thành công! Đã ghim định vị lên bản đồ.`;
+                toast.classList.remove('opacity-0', 'pointer-events-none');
+                toast.classList.add('opacity-100', 'translate-y-2');
+
+                ghimSuCoMoiVaoViTriHienTai(eventType);
+
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-2');
+                    toast.classList.add('opacity-0', 'pointer-events-none');
+                    
+                    document.getElementById('captured-preview').classList.add('hidden');
+                    document.getElementById('camera-prompt-ui').classList.remove('hidden');
+                    document.getElementById('camera-btn').className = "border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center bg-white hover:bg-surface transition-colors overflow-hidden relative group h-full w-full";
+                    document.getElementById('camera-input').value = "";
+
+                    switchScreen('map');
+                }, 2500);
+
+            }, 2000);
+        }
+
+        // --- HỆ THỐNG XỬ LÝ MICRO / GIỌNG NÓI VOICE-REPORT ---
+        let isRecording = false;
+        const voiceBtn = document.getElementById('voiceBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'vi-VN'; 
+            recognition.continuous = false; 
+            recognition.interimResults = false; 
+
+            recognition.onstart = () => {
+                isRecording = true;
+                voiceBtn.classList.add('recording-active');
+                voiceBtn.querySelector('span').innerText = 'stop';
+                voiceStatus.innerText = 'Hệ thống đang nghe, hãy nói đi...';
+                voiceStatus.className = "text-sm text-error font-bold";
+            };
+
+            recognition.onresult = (event) => {
+                const textResult = event.results[0][0].transcript;
+                voiceStatus.innerText = `Kết quả nhận diện: "${textResult}"`;
+                voiceStatus.className = "text-sm text-tertiary font-bold";
+
+                setTimeout(() => {
+                    let lowerText = textResult.toLowerCase();
+                    if (lowerText.includes('tai nạn') || lowerText.includes('đâm nhau') || lowerText.includes('va chạm')) {
+                        triggerAISimulation('Tai nạn');
+                    } else if (lowerText.includes('ngập') || lowerText.includes('lụt') || lowerText.includes('mưa lớn')) {
+                        triggerAISimulation('Ngập lụt');
+                    } else if (lowerText.includes('cấm đường') || lowerText.includes('chặn đường') || lowerText.includes('rào')) {
+                        triggerAISimulation('Cấm đường');
+                    } else {
+                        triggerAISimulation('Kẹt xe');
+                    }
+                }, 1500);
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Lỗi Speech Recognition: ", event.error);
+                voiceStatus.innerText = `Lỗi hệ thống: Không thể thu âm (${event.error}).`;
+                voiceStatus.className = "text-sm text-error font-bold";
+                resetVoiceButton();
+            };
+
+            recognition.onend = () => { resetVoiceButton(); };
+        } else {
+            voiceStatus.innerText = "Trình duyệt không hỗ trợ Speech Recognition.";
+            voiceStatus.className = "text-sm text-error font-bold";
+        }
+
+        function resetVoiceButton() {
+            isRecording = false;
+            if (voiceBtn) {
+                voiceBtn.classList.remove('recording-active');
+                voiceBtn.querySelector('span').innerText = 'mic';
+            }
+        }
+
+        if (voiceBtn) {
+            voiceBtn.addEventListener('click', () => {
+                if (!SpeechRecognition) return;
+                if (!isRecording) { recognition.start(); } else { recognition.stop(); }
+            });
+        }
+
+        function upvoteReport(btnElement) {
+            const countSpan = btnElement.querySelector('.vote-count');
+            let currentVotes = parseInt(countSpan.innerText);
+            
+            if(!btnElement.classList.contains('voted')) {
+                btnElement.classList.add('voted', 'bg-tertiary-container', 'text-white');
+                btnElement.classList.remove('bg-green-50', 'text-tertiary');
+                countSpan.innerText = currentVotes + 1;
+            } else {
+                btnElement.classList.remove('voted', 'bg-tertiary-container', 'text-white');
+                btnElement.classList.add('bg-green-50', 'text-tertiary');
+                countSpan.innerText = currentVotes - 1;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initMap);
     </script>
 </body>
 </html>
